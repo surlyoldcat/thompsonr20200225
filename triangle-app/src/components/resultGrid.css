@@ -1,0 +1,16 @@
+
+polygon.emptyTriDark {
+    fill: grey;
+    stroke:none;
+}
+
+polygon.emptyTriLight {
+    fill:silver;
+    stroke:none;
+}
+
+polygon.highlightedTri {
+    stroke:yellow;
+    stroke-width: 8px;
+    fill:transparent;
+}

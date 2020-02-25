@@ -15,6 +15,8 @@ namespace TriangleMan.API
 {
     public class Startup
     {
+        private readonly string mySpecificOriginsPolicy = "_mySpecificOriginsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,6 +27,12 @@ namespace TriangleMan.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => {
+                options.AddPolicy(mySpecificOriginsPolicy,
+                builder => {
+                    builder.WithOrigins("http://localhost:3000");
+                });
+            });
             services.AddControllers();
         }
 
@@ -40,7 +48,7 @@ namespace TriangleMan.API
             //rkt: commented out because they're not needed for this exercise
             //app.UseHttpsRedirection();
             //app.UseAuthorization();
-
+            app.UseCors(mySpecificOriginsPolicy);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
