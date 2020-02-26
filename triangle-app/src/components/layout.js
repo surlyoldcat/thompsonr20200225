@@ -24,7 +24,7 @@ class Layout extends Component {
                 <tr>
                     <td colSpan="2" className="headerCell">
                         <div className="title">Triangle Man</div>
-                        <p className="disclaimer">Disclaimer: Rick doesn't know React. This is just a test harness (or a cry for help?)</p>
+                        <p className="disclaimer">Disclaimer: Rick doesn't know React. This is just a naive test harness.</p>
                     </td>
                 </tr>
                 <tr>
@@ -40,7 +40,7 @@ class Layout extends Component {
         );
     }
 
-      
+    //TODO the API interaction should be refactored into a service
     handleTriangleRequested(paramsObj) {
         let query = "";
         let resource = "";
@@ -58,9 +58,7 @@ class Layout extends Component {
             throw new Error("Unexpected triangle parameter type!");
         }
         const baseUrl = "http://localhost:5000/triangle/" + resource;
-        
         const url = baseUrl + query;
-        console.log(url);
         fetch(url, {mode: 'cors', method:'GET'})
         .then(resp => resp.json())
         .then(data => this.setState({apiResult:data}))

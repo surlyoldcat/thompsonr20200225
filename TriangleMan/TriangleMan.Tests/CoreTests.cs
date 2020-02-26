@@ -98,27 +98,6 @@ namespace TriangleMan.Tests
             Assert.IsTrue(pMid == ps[1]);
         }
 
-        [Test]
-        public void TestPointsAreInvalidTriangle()
-        {
-            Point a = new Point(10, 10);
-            Point b = new Point(10, 20);
-            Point c = new Point(20, 50);
-
-            var im = new Image();
-            Assert.Throws<ArgumentException>(() =>
-            {
-                var result = im.FindTriangle(a, b, c);
-            });
-
-            Point p1 = new Point(1, 5);
-            Point p2 = new Point(20, 20);
-            Point p3 = new Point(20, 13);
-            Assert.Throws<ArgumentException>(() =>
-            {
-                var x = im.FindTriangle(p1, p2, p3);
-            });
-        }
 
     }
 }

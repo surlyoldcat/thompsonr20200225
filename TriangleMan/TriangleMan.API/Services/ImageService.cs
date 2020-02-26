@@ -5,9 +5,16 @@ using TriangleMan.API.Model;
 
 namespace TriangleMan.API.Services
 {
+    /// Provides methods for extracting triangles
+    /// from an imaginary image.
     public interface IImageService
     {
+        /// Get info about a triangle, given 3 points
         Triangle FindTriangle(Point p1, Point p2, Point p3);
+
+        /// Get info about a triangle, given Row and Column.
+        /// Note, Row is a string, because rows are lettered,
+        /// not numbered, in the UI.
         Triangle FindTriangle(string row, int col);
     }
 
@@ -20,32 +27,37 @@ namespace TriangleMan.API.Services
             BottomLeft,
             BottomRight
         }
-   
         public const int NUM_ROWS = 6;
         public const int NUM_COLS = 12;
         public const int SIDE_LENGTH = 10;
-      
-        private static readonly Dictionary<string, int> _rowForLetter;
-        private static readonly Dictionary<int, string> _letterForRow;
 
-        static ImageService()
+        #region Dictionaries for mapping row letters to numbers
+        private static readonly char[] _letters = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
+        private static readonly Lazy<Dictionary<string, int>> _rowForLetterLz = new Lazy<Dictionary<string, int>>(() =>
         {
-            List<string> allLowers = new List<string>(26);
-            for (char letter = 'a'; letter <= 'z'; letter++)
-            {
-                allLowers.Add(letter.ToString());
-            }
-            //these 2 maps are for translating from letter indexes
-            //to row number (1-based index) and back. if we need
-            //to add more letters, we can just expand these dicts.
-            _rowForLetter = new Dictionary<string, int>(NUM_ROWS);
-            _letterForRow = new Dictionary<int, string>(NUM_COLS);
-            for (int a = 0; a < NUM_ROWS; a++)
-            {
-                _rowForLetter.Add(allLowers[a], a+1);
-                _letterForRow.Add(a+1, allLowers[a]);
-            }
+            var letters = _letters.Take(NUM_ROWS).Select(ch => ch.ToString());
+            return letters.Zip(Enumerable.Range(1, NUM_ROWS))
+                .ToDictionary(tup => tup.First, tup => tup.Second);
+        });
+
+        private static readonly Lazy<Dictionary<int, string>> _letterForRowLz = new Lazy<Dictionary<int, string>>(() =>
+        {
+            var letters = _letters.Take(NUM_ROWS).Select(ch => ch.ToString());
+            return Enumerable.Range(1, NUM_ROWS)
+                .Zip(letters)
+                .ToDictionary(tup => tup.First, tup => tup.Second);
+        });
+
+        private static Dictionary<int, string> _letterForRow
+        {
+            get {return _letterForRowLz.Value;}
         }
+
+        private static Dictionary<string, int> _rowForLetter
+        {
+            get {return _rowForLetterLz.Value;}
+        }
+        #endregion
 
         public ImageService()
         { }
@@ -147,15 +159,12 @@ namespace TriangleMan.API.Services
             {
                 return TriangleOrientation.BottomLeft;
             }
-
-
         }
 
         private bool ValidatePoints(List<Point> points)
         {
             //do some basic validation to ensure that the Points
             //make up something resembling our triangle
-
             if (points.Count != 3)
             {
                 return false;

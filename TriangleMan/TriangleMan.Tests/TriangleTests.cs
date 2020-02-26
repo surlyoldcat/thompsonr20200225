@@ -4,12 +4,41 @@ using System.Text;
 using NUnit.Framework;
 using TriangleMan.API;
 using TriangleMan.API.Model;
+using TriangleMan.API.Services;
 
 namespace TriangleMan.Tests
 {
     [TestFixture(Category = "Triangle Functionality Tests")]
     public class TriangleTests
     {
+        private IImageService Service {get;set;}
+
+        [OneTimeSetUp]
+        public void Init()
+        {
+            Service = new ImageService();
+        }
+
+        [Test]
+        public void TestPointsAreInvalidTriangle()
+        {
+            Point a = new Point(10, 10);
+            Point b = new Point(10, 20);
+            Point c = new Point(20, 50);
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                var result = Service.FindTriangle(a, b, c);
+            });
+
+            Point p1 = new Point(1, 5);
+            Point p2 = new Point(20, 20);
+            Point p3 = new Point(20, 13);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                var x = Service.FindTriangle(p1, p2, p3);
+            });
+        }
 
         [Test]
         public void TestGetValidTriangleByCoords()
@@ -27,8 +56,8 @@ namespace TriangleMan.Tests
             var a = new Point(20, 20);
             var b = new Point(10, 20);
             var c = new Point(20, 30);
-            Image im = new Image();
-            var actual = im.FindTriangle(a, b, c);
+            
+            var actual = Service.FindTriangle(a, b, c);
 
             Assert.AreEqual(expected, actual);
         }
@@ -36,8 +65,8 @@ namespace TriangleMan.Tests
         [Test]
         public void TestGetValidTriangleByRowCol_Odd()
         {
-            Image im = new Image();
-            Triangle actual = im.FindTriangle("B", 5);
+            
+            Triangle actual = Service.FindTriangle("B", 5);
 
             var points = new List<Point>()
             {
@@ -55,8 +84,8 @@ namespace TriangleMan.Tests
         [Test]
         public void TestGetValidTriangleByRowCol_Even()
         {
-            Image im = new Image();
-            Triangle actual = im.FindTriangle("d", 6);
+            
+            Triangle actual = Service.FindTriangle("d", 6);
 
             var points = new List<Point>()
             {
@@ -74,33 +103,33 @@ namespace TriangleMan.Tests
         [Test]
         public void TestGetTriangleByRowColOutOfBounds()
         {
-            Image im = new Image();
+            
             Assert.Throws<ArgumentException>(() =>
             {
-                var res = im.FindTriangle("l", 300);
+                var res = Service.FindTriangle("l", 300);
             });
         }
 
         [Test]
         public void TestGetTriangleByCoordsOutOfBounds()
         {
-            Image im = new Image();
+            
             Point a = new Point(10, 9433);
             Point b = new Point(100, 100);
             Point c = new Point(20, 30);
             Assert.Throws<ArgumentException>(() =>
             {
-                var res = im.FindTriangle(a, b, c);
+                var res = Service.FindTriangle(a, b, c);
             });
         }
 
         [Test]
         public void TestNegativeRowCol()
         {
-            Image im = new Image();
+            
             Assert.Throws<ArgumentException>(() =>
             {
-                var res = im.FindTriangle("l", -40);
+                var res = Service.FindTriangle("l", -40);
             });
 
         }
@@ -108,41 +137,81 @@ namespace TriangleMan.Tests
         [Test]
         public void TestNegativeCoords()
         {
-            Image im = new Image();
+            
             Point a = new Point(10, -9433);
             Point b = new Point(100, 100);
             Point c = new Point(-20, -30);
             Assert.Throws<ArgumentException>(() =>
             {
-                var res = im.FindTriangle(a, b, c);
+                var res = Service.FindTriangle(a, b, c);
             });
         }
 
         [Test]
         public void TestCoordinatesWithDuplicate()
         {
-            Image im = new Image();
+            
             Point a = new Point(20, 20);
             Point b = new Point(10, 20);
             Point c = new Point(20, 20);
             Assert.Throws<ArgumentException>(() =>
             {
-                var res = im.FindTriangle(a, b, c);
+                var res = Service.FindTriangle(a, b, c);
             });
         }
 
         [Test]
         public void TestCoordinatesWithNullPoint()
         {
-            Image im = new Image();
+            
             Point a = new Point(20, 20);
             Point b = null;
             Point c = new Point(10, 20);
             Assert.Throws<ArgumentException>(() =>
             {
-                var res = im.FindTriangle(a, b, c);
+                var res = Service.FindTriangle(a, b, c);
             });
         }
 
+        [Test]
+        public void TestRowColEdge()
+        {
+            string row = "g";
+            int col = 13;
+            Assert.Throws<ArgumentException>(() => 
+            {
+                var res = Service.FindTriangle(row, col);
+            });
+
+            row = "f";
+            col = 12;
+            Assert.DoesNotThrow(() =>
+            {
+                var res2 = Service.FindTriangle(row, col);
+            });
+        }
+
+        [Test]
+        public void TestCoordsEdge()
+        {
+            int maxLeft = 120;
+            int maxTop = 60;
+            Point a = new Point(maxTop + 10, maxLeft);
+            Point b = new Point(maxTop, maxLeft);
+            Point c = new Point(maxTop, maxLeft+10);
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                var r = Service.FindTriangle(a, b, c);
+            });
+
+            Point d = new Point(maxTop, maxLeft);
+            Point e = new Point(maxTop - 10, maxLeft);
+            Point f = new Point(maxTop - 10, maxLeft - 10);
+            Assert.DoesNotThrow(() =>
+            {
+                var r = Service.FindTriangle(d, e, f);
+            });
+        }
     }
 }
