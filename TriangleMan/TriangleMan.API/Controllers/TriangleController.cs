@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TriangleMan.API.Model;
+using TriangleMan.API.Services;
 
 namespace TriangleMan.API.Controllers
 {
@@ -17,11 +18,12 @@ namespace TriangleMan.API.Controllers
         private const int NUM_ROWS = 6;
 
         private readonly ILogger<TriangleController> log;
-        private readonly Image image;
-        public TriangleController(ILogger<TriangleController> logger)
+        private readonly IImageService imageSvc;
+        public TriangleController(ILogger<TriangleController> logger,
+            IImageService imgSvc)
         {
             log = logger;
-            image = new Image(NUM_ROWS, NUM_COLS);
+            imageSvc = imgSvc;
         }
 
         [HttpGet("bycoords")]
@@ -31,13 +33,12 @@ namespace TriangleMan.API.Controllers
             [FromQuery, Required]int x3, [FromQuery, Required]int y3)
         {
             IActionResult response = null;
-            var a = new Point(x1, y1);
-            var b = new Point(x2, y2);
-            var c = new Point(x3, y3);
-
             try
             {
-                var tri = image.FindTriangle(a, b, c);
+                var tri = imageSvc.FindTriangle(
+                    new Point(y1, x1)
+                    , new Point(y2, x2)
+                    , new Point(y3, x3));
                 response = new OkObjectResult(tri);
             }
             catch (ArgumentException aex)
@@ -59,7 +60,7 @@ namespace TriangleMan.API.Controllers
             IActionResult response = null;
             try
             {
-                var tri = image.FindTriangle(row, col);
+                var tri = imageSvc.FindTriangle(row, col);
                 response = new OkObjectResult(tri);
             }
             catch (ArgumentException aex)
@@ -75,6 +76,7 @@ namespace TriangleMan.API.Controllers
             
         }
 
+        /// Create an error response that also includes a custom error message
         private static IActionResult CreateErrorResult(ApiError err, int statusCode)
         {
             var res = new ObjectResult(err);

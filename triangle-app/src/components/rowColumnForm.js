@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import RowColParams from './rowColParams';
 
 class RowColumnForm extends Component {
     constructor(props) {
@@ -24,7 +25,9 @@ class RowColumnForm extends Component {
     }
 
     handleSubmit(event) {
-        this.props.onSubmitClick(this.state.rowVal, this.state.colVal);
+        const parms = new RowColParams(this.state.rowVal, this.state.colVal)   
+        console.log(parms);     
+        this.props.onSubmitClick(parms);
         event.preventDefault();
     }
 

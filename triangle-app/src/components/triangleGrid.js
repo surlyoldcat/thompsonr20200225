@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './resultGrid.css';
+import './triangleGrid.css';
 
-class ResultGrid extends Component {
+class TriangleGrid extends Component {
     constructor(props) {
         super(props);
         this.viewMultiplier = 10;
@@ -13,15 +13,16 @@ class ResultGrid extends Component {
             4:"e",
             5:"f"
         };
+        this.createGrid = this.createGrid.bind(this);
+        this.createHighlightTriangle = this.createHighlightTriangle.bind(this);
     }
 
 
-    createGrid = ()=> {
+    createGrid() {
         let shapes = [];
         const numrows = 6;
         const numcols = 6;
         const sideLength = 10 * this.viewMultiplier;
-        const tri = this.props.value;
         //build the grid of triangles
         for (let rowidx=0; rowidx < numrows; rowidx++)
         {
@@ -54,16 +55,28 @@ class ResultGrid extends Component {
                 
             }
         }
-        //highlight the searched-for triangle
-        if (tri) {
-            let pointA = this.getPointsForDisplay(tri.vertices[0], this.viewMultiplier);
-            let pointB = this.getPointsForDisplay(tri.vertices[1], this.viewMultiplier);
-            let pointC = this.getPointsForDisplay(tri.vertices[2], this.viewMultiplier);
-            let highlightTri = `${pointA}, ${pointB}, ${pointC}`;
-            shapes.push(<polygon className="highlightedTri" points={highlightTri}></polygon>); 
+        const triElmt = this.createHighlightTriangle(this.props.value);
+        if (triElmt) {
+            shapes.push(triElmt);
         }
         return shapes;
 
+    }
+
+    createHighlightTriangle(triangle) {
+        if (!triangle 
+            || !triangle.vertices 
+            || triangle.vertices.length===0)
+            return null;
+        
+        const pointA = this.getPointsForDisplay(triangle.vertices[0], this.viewMultiplier);
+        const pointB = this.getPointsForDisplay(triangle.vertices[1], this.viewMultiplier);
+        const pointC = this.getPointsForDisplay(triangle.vertices[2], this.viewMultiplier);
+        const highlightTri = `${pointA}, ${pointB}, ${pointC}`;
+        return (
+            <polygon className="highlightedTri" points={highlightTri}></polygon>
+        );
+        
     }
 
     getPointsForDisplay(vertex, zoomFactor=1)
@@ -84,4 +97,4 @@ class ResultGrid extends Component {
         );
     }
 }
-export default ResultGrid;
+export default TriangleGrid;

@@ -1,16 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TriangleMan.API.Model;
 
-namespace TriangleMan.API
+namespace TriangleMan.API.Services
 {
-    /// <summary>
-    /// Class that provides the 'image made up of triangles' business
-    /// logic for this exercise. In real life, this would probably
-    /// get broken out into some sort of service.
-    /// </summary>
-    public class Image
+    public interface IImageService
+    {
+        Triangle FindTriangle(Point p1, Point p2, Point p3);
+        Triangle FindTriangle(string row, int col);
+    }
+
+    public class ImageService : IImageService
     {
         private enum TriangleOrientation
         {
@@ -19,37 +20,35 @@ namespace TriangleMan.API
             BottomLeft,
             BottomRight
         }
-
-        public const int DEFAULT_ROWS = 6;
-        public const int DEFAULT_COLS = 12;
+   
+        public const int NUM_ROWS = 6;
+        public const int NUM_COLS = 12;
         public const int SIDE_LENGTH = 10;
-        public int ColumnCount { get; }
-        public int RowCount { get; }
+      
+        private static readonly Dictionary<string, int> _rowForLetter;
+        private static readonly Dictionary<int, string> _letterForRow;
 
-        private readonly Dictionary<string, int> rowForLetter;
-        private readonly Dictionary<int, string> letterForRow;
-
-        public Image()
-            : this(DEFAULT_ROWS, DEFAULT_COLS)
-        { }
-
-        public Image(int numRows, int numCols)
+        static ImageService()
         {
-            ColumnCount = numCols;
-            RowCount = numRows;
+            List<string> allLowers = new List<string>(26);
+            for (char letter = 'a'; letter <= 'z'; letter++)
+            {
+                allLowers.Add(letter.ToString());
+            }
             //these 2 maps are for translating from letter indexes
             //to row number (1-based index) and back. if we need
             //to add more letters, we can just expand these dicts.
-            rowForLetter = new Dictionary<string, int>(26);
-            letterForRow = new Dictionary<int, string>(26);
-            int i = 1;
-            for (char letter = 'a'; letter <= 'z'; letter++)
+            _rowForLetter = new Dictionary<string, int>(NUM_ROWS);
+            _letterForRow = new Dictionary<int, string>(NUM_COLS);
+            for (int a = 0; a < NUM_ROWS; a++)
             {
-                rowForLetter.Add(letter.ToString(), i);
-                letterForRow.Add(i, letter.ToString());
-                i++;
+                _rowForLetter.Add(allLowers[a], a+1);
+                _letterForRow.Add(a+1, allLowers[a]);
             }
         }
+
+        public ImageService()
+        { }
 
         public Triangle FindTriangle(Point p1, Point p2, Point p3)
         {
@@ -81,33 +80,33 @@ namespace TriangleMan.API
                 colnum = (v90.Left * 2 ) / SIDE_LENGTH + 1;
             }
             
-            return new Triangle(vertices, letterForRow[rownum], colnum);
+            return new Triangle(vertices, _letterForRow[rownum], colnum);
 
         }
 
         public Triangle FindTriangle(string row, int col)
         {   
             string lowerRow = row.ToLower();
-            if (col > ColumnCount || col < 1)
+            if (col > NUM_COLS || col < 1)
             {
                 throw new ArgumentException("Invalid value for argument 'col'");
             }
-            if (!rowForLetter.ContainsKey(lowerRow))
+            if (!_rowForLetter.ContainsKey(lowerRow))
             {
                 throw new ArgumentException("Invalid value for argument 'row'");
             }
 
-            int rowNum = rowForLetter[lowerRow];
+            int rowNum = _rowForLetter[lowerRow];
             //for the \ orientation of the triangle, odd-number columns
             // have v90 bottom-left, evens have it top-right
             int gridCol = col / 2;
             Point v90;
             Point upperLeft;
             Point lowerRight;
+            // create the 90-degree vertex, and calculate the
+            // other 2 based on that.
             if (col % 2 == 0)
             {
-                // create the 90-degree vertex, and calculate the
-                // other 2 based on that.
                 v90 = new Point((rowNum - 1) * SIDE_LENGTH, gridCol * SIDE_LENGTH);
                 upperLeft = new Point(v90.Top, v90.Left - SIDE_LENGTH);
                 lowerRight =new Point(v90.Top + SIDE_LENGTH, v90.Left);
@@ -193,8 +192,8 @@ namespace TriangleMan.API
             }
 
             //verify that none of the points are out of bounds
-            int maxLeft = ColumnCount * SIDE_LENGTH;
-            int maxTop = RowCount * SIDE_LENGTH;
+            int maxLeft = NUM_COLS * SIDE_LENGTH;
+            int maxTop = NUM_ROWS * SIDE_LENGTH;
             if (minX < 0 || minY < 0)
             {
                 return false;
@@ -207,6 +206,7 @@ namespace TriangleMan.API
             //everything's fine
             return true;
         }
+
 
     }
 }

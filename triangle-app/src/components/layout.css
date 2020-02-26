@@ -1,0 +1,31 @@
+table.main {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px;
+}
+.disclaimer {
+  font-size: medium;
+  font-style: italic;
+  color: darkslategray;
+}
+.title {
+  background-color: #282c34;
+  width: 100%;
+  display: flex;
+  font-size: x-large;
+  font-weight: bold;
+  color: palegreen;
+  padding:10px;
+}
+
+.leftSide {
+  padding: 10px;
+  vertical-align: top;
+  text-align: left;
+  max-width: 400px;
+}
+
+.rightSide {
+  padding: 10px;
+  vertical-align: top;
+}

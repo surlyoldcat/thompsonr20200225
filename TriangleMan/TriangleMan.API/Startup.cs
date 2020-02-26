@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TriangleMan.API.Services;
 
 namespace TriangleMan.API
 {
@@ -33,6 +34,8 @@ namespace TriangleMan.API
                     builder.WithOrigins("http://localhost:3000");
                 });
             });
+            //add our fancy custom service, so it can be injected into controllers
+            services.AddSingleton<IImageService, ImageService>();
             services.AddControllers();
         }
 
