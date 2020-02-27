@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TriangleMan.API.Model;
@@ -14,9 +15,6 @@ namespace TriangleMan.API.Controllers
     [Route("[controller]")]
     public class TriangleController : ControllerBase
     {
-        private const int NUM_COLS = 12;
-        private const int NUM_ROWS = 6;
-
         private readonly ILogger<TriangleController> log;
         private readonly IImageService imageSvc;
         public TriangleController(ILogger<TriangleController> logger,
@@ -32,6 +30,9 @@ namespace TriangleMan.API.Controllers
             [FromQuery, Required]int x2, [FromQuery, Required]int y2,
             [FromQuery, Required]int x3, [FromQuery, Required]int y3)
         {
+            string coords = $"({x1},{y1}) ({x2},{y2}) ({x3},{y3})";
+            LogRequest(coords);
+
             IActionResult response = null;
             try
             {
@@ -43,11 +44,12 @@ namespace TriangleMan.API.Controllers
             }
             catch (ArgumentException aex)
             {
+                LogFailure(aex, HttpStatusCode.BadRequest);
                 response = CreateErrorResult(ApiError.FromException(aex), 400);
             }
             catch (Exception ex)
             {
-                log.LogError(ex.Message);
+                LogFailure(ex, HttpStatusCode.InternalServerError);
                 response = CreateErrorResult(ApiError.FromException(ex), 500);
             }
             return response;
@@ -57,6 +59,7 @@ namespace TriangleMan.API.Controllers
         [Produces("application/json")]
         public IActionResult GetByRowColumn([FromQuery, Required]string row, [FromQuery, Required]int col)
         {
+            LogRequest($"Row={row}, Col={col}");
             IActionResult response = null;
             try
             {
@@ -65,15 +68,28 @@ namespace TriangleMan.API.Controllers
             }
             catch (ArgumentException aex)
             {
+                LogFailure(aex, HttpStatusCode.BadRequest);
                 response = CreateErrorResult(ApiError.FromException(aex), 400);
             }
             catch (Exception ex)
             {
-                log.LogError(ex.Message);
+                LogFailure(ex, HttpStatusCode.InternalServerError);
                 response = CreateErrorResult(ApiError.FromException(ex), 500);
             }
             return response;
             
+        }
+
+        private void LogFailure(Exception ex, HttpStatusCode code)
+        {
+            var msg = $"Requested: {Request.Path}, Response: {code}, Message:{ex.Message}";
+            log.LogError(msg);
+        }
+
+        private void LogRequest(string payload)
+        {
+            var msg = $"Requesting {Request.Path.ToString()}: {payload}";
+            log.LogTrace(msg);
         }
 
         /// Create an error response that also includes a custom error message
