@@ -27,6 +27,8 @@ namespace TriangleMan.API.Services
             BottomLeft,
             BottomRight
         }
+
+        //TODO make size of image configurable or dynamic
         public const int NUM_ROWS = 6;
         public const int NUM_COLS = 12;
         public const int SIDE_LENGTH = 10;

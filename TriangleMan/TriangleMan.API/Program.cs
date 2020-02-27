@@ -15,6 +15,7 @@ namespace TriangleMan.API
     {
         public static void Main(string[] args)
         {
+            //set up NLog to capture top-level unhandled exceptions
             var logger = NLog.Web.NLogBuilder.ConfigureNLog("NLog.config").GetCurrentClassLogger();
             try
             {
@@ -44,7 +45,7 @@ namespace TriangleMan.API
                                 logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                             });
                 })
-                .UseNLog();
+                .UseNLog(); //make NLog the default injected Logging provider
             
     }
 }

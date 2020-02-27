@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TriangleMan.API.Model;
@@ -30,8 +29,7 @@ namespace TriangleMan.API.Controllers
             [FromQuery, Required]int x2, [FromQuery, Required]int y2,
             [FromQuery, Required]int x3, [FromQuery, Required]int y3)
         {
-            string coords = $"({x1},{y1}) ({x2},{y2}) ({x3},{y3})";
-            LogRequest(coords);
+            LogRequest($"({x1},{y1}) ({x2},{y2}) ({x3},{y3})");
 
             IActionResult response = null;
             try
@@ -86,9 +84,9 @@ namespace TriangleMan.API.Controllers
             log.LogError(msg);
         }
 
-        private void LogRequest(string payload)
+        private void LogRequest(string query)
         {
-            var msg = $"Requesting {Request.Path.ToString()}: {payload}";
+            var msg = $"Requesting {Request.Path.ToString()}: {query}";
             log.LogTrace(msg);
         }
 
