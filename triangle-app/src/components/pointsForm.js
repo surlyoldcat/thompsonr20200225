@@ -82,9 +82,11 @@ class PointsForm extends Component {
                             </label>                            
                         </td>
                     </tr>
-                         
+                    <tr>
+                        <td colSpan="2" style={{'textAlign':'center'}}><input type="submit" value="Submit"/></td>
+                    </tr>
                 </tbody></table>
-            <input type="submit" value="Submit"/>
+            
             </form>
         );
     }

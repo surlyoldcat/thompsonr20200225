@@ -23,7 +23,10 @@ class Layout extends Component {
             <table className="main">
                 <tr>
                     <td colSpan="2" className="headerCell">
-                        <div className="title">Triangle Man</div>
+                        <div className="title">
+                            <img className="logo" src="/images/triangle.png" alt=""/>
+                            &nbsp;Triangle Man
+                            </div>
                         <p className="disclaimer">Disclaimer: Rick doesn't know React. This is just a naive test harness.</p>
                     </td>
                 </tr>

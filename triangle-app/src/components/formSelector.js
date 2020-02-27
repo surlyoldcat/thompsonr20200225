@@ -16,7 +16,7 @@ class FormSelector extends Component {
 
     render() {
         return (
-            <div><form>
+            <div style={{'padding-bottom':'10px'}}><form>
                 <label>
                     <input type="radio" 
                         name="formOption"
@@ -25,6 +25,7 @@ class FormSelector extends Component {
                         onChange={this.handleOptionChanged} />                    
                     Row/Col
                 </label>
+                &nbsp;&nbsp;
                 <label>
                     <input type="radio"
                         name="formOption"

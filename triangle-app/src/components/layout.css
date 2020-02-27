@@ -16,16 +16,23 @@ table.main {
   font-weight: bold;
   color: palegreen;
   padding:10px;
+  vertical-align: middle;
 }
 
 .leftSide {
   padding: 10px;
   vertical-align: top;
   text-align: left;
-  max-width: 400px;
+  min-width: 150px;
 }
 
 .rightSide {
   padding: 10px;
   vertical-align: top;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+
 }

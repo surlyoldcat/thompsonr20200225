@@ -34,17 +34,19 @@ class RowColumnForm extends Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <label>
-                    Row (a-f):
-                    <input type="text" value={this.state.rowVal} onChange={this.handleRowChange} />
-                </label>
-                <br/>
-                <label>
-                    Column (1-12):
-                    <input type="text" value={this.state.colVal} onChange={this.handleColChange}/>
-                </label>
-                <br/>
-                <input type="submit" value="Submit"/>
+                <table><tbody>
+                    <tr>
+                        <td style={{'textAlign':'right'}}>Row (a-f)</td>
+                        <td><input type="text" value={this.state.rowVal} onChange={this.handleRowChange} /></td>
+                    </tr>
+                    <tr>
+                        <td style={{'textAlign':'right'}}>Column (1-12)</td>
+                        <td><input type="text" value={this.state.colVal} onChange={this.handleColChange}/></td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2" style={{'textAlign':"center"}}><input type="submit" value="Submit"/></td>
+                    </tr>    
+                </tbody></table>                
             </form>
         );
     }

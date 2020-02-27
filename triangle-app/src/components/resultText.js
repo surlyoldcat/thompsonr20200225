@@ -4,7 +4,7 @@ import './resultText.css';
 function ResultText(props) {
     let txt = "nothing yet...";
     if (props.value) {
-        txt = JSON.stringify(props.value);
+        txt = JSON.stringify(props.value, null, 2);        
     }
     return (
         <div>
