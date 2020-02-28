@@ -2,8 +2,7 @@ import React, {Component} from 'react'
 import FormContainer from './formContainer';
 import ResultText from './resultText';
 import TriangleGrid from './triangleGrid';
-import RowColParams from './rowColParams';
-import PointParams from './pointParams';
+import ApiService from '../classes/apiService';
 
 import './layout.css';
 
@@ -14,13 +13,13 @@ class Layout extends Component {
         this.state = {
             apiResult: null
         };
-
-        this.handleTriangleRequested = this.handleTriangleRequested.bind(this);
+        this.api = new ApiService();
+        //this.handleTriangleRequested = this.handleTriangleRequested.bind(this);
     }
 
     render() {
         return (
-            <table className="main">
+            <table className="main"><tbody>
                 <tr>
                     <td colSpan="2" className="headerCell">
                         <div className="title">
@@ -39,34 +38,18 @@ class Layout extends Component {
                         <TriangleGrid value={this.state.apiResult} />
                     </td>
                 </tr>
-            </table>
+                </tbody></table>
         );
     }
 
-    //TODO the API interaction should be refactored into a service
-    handleTriangleRequested(paramsObj) {
-        let query = "";
-        let resource = "";
-        if (paramsObj instanceof  RowColParams) {
-            query = `?row=${paramsObj.row}&col=${paramsObj.col}`;
-            resource = "byrowcol";
-        }
-        else if (paramsObj instanceof PointParams) {
-            query = `?x1=${paramsObj.left1}&y1=${paramsObj.top1}`
-                + `&x2=${paramsObj.left2}&y2=${paramsObj.top2}`
-                + `&x3=${paramsObj.left3}&y3=${paramsObj.top3}`;
-            resource = "bycoords"
-        }
-        else {
-            throw new Error("Unexpected triangle parameter type!");
-        }
-        const baseUrl = "http://localhost:5000/triangle/" + resource;
-        const url = baseUrl + query;
-        fetch(url, {mode: 'cors', method:'GET'})
-        .then(resp => resp.json())
-        .then(data => this.setState({apiResult:data}))
-        .catch(console.log);
-    } 
+    handleTriangleRequested = requestParms => {
+        this.api.fetchTriangle(requestParms, this.updateState);
+    }
+
+    updateState = data => {
+        this.setState({apiResult:data}); 
+    }
+    
 }
 
 

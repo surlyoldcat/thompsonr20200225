@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import PointParams from './pointParams';
+import PointParams from '../classes/pointParams';
 import './pointsForm.css';
 
 class PointsForm extends Component {
@@ -39,7 +39,15 @@ class PointsForm extends Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <table className="fieldTable"><tbody>
+                <table className="fieldTable">
+                    <thead>
+                        <tr>
+                            <td colSpan="2" className="tableSubheading">
+                                Enter coordinates in multiples of 10 (e.g. 10, 20, 30 etc.)
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td>
                             <label>

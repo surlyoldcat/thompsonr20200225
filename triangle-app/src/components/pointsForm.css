@@ -8,3 +8,8 @@
 input[type=text] {
     width: 30px;
 }
+
+.tableSubheading {
+    font-size: smaller;
+    max-width: 240px;
+}

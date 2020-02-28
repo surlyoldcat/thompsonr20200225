@@ -14,3 +14,8 @@ polygon.highlightedTri {
     stroke-width: 8px;
     fill:transparent;
 }
+
+.colHeader {
+    font-size: x-small;
+    font-style: italic;
+}

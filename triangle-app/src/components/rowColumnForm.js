@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import RowColParams from './rowColParams';
+import RowColParams from '../classes/rowColParams';
 
 class RowColumnForm extends Component {
     constructor(props) {

@@ -16,7 +16,7 @@ class FormSelector extends Component {
 
     render() {
         return (
-            <div style={{'padding-bottom':'10px'}}><form>
+            <div style={{paddingBottom:"10px"}}><form>
                 <label>
                     <input type="radio" 
                         name="formOption"
